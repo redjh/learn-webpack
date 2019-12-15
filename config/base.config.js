@@ -1,10 +1,13 @@
+/* 基础配置文件 */
 const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
 	entry: './src/index.js',
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: 'dist/' //指定公共路径
+		path: path.resolve(__dirname, '../dist'),
+		// publicPath: 'dist/' //指定公共路径
 	},
 	module: {
 		rules: [
@@ -48,14 +51,27 @@ module.exports = {
 						presets: ['@babel/preset-env']
 					}
 				}
+			},
+			/* 处理vue文件 */
+			{
+				test: /\.vue$/,
+				use: ['vue-loader']
 			}
 		]
 	},
 	resolve: {
-		/* 配置Vue别名 ～～> 使用vue-runtime-compiler */
-		/* 使用vue-runtime-only 不需要配置 */
+		/* 使用vue-runtime-compiler:采用index.html <div id='app'></div>来挂载vue实例 ～～>需要配置Vue别名 */
+		/* 使用vue-runtime-only:采用render函数来挂载vue实例 不需要配置 */
 		alias: {
 			'vue$': 'vue/dist/vue.esm.js'
-		}
-	}
+		},
+		extensions: ['.vue', '.js'] //导入文件不需要指定文件后缀名
+	},
+	/* 插件使用 */
+	plugins: [
+		new webpack.BannerPlugin('最终版本归属redjh所有'),
+		new HtmlWebpackPlugin({
+			template: 'index.html'
+		}) //指定html模版打包到dist文件
+	]
 }
